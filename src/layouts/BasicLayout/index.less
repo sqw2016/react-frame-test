@@ -1,0 +1,53 @@
+@sidebarBgColor: #000;
+@sidebarBgColorHover: #1f1f20;
+@menuTextColor: #d8d9da;
+@menuTextColorActive: #ffffff;
+@contentBgColor: #161719;
+@contentColor: #d8d9da;
+@transitionTime: .3s;
+
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.bgColor {
+  background: @sidebarBgColor;
+}
+
+.contentBody {
+  //width: calc(100% - 200px);
+  width: 100%;
+  padding: 0 30px;
+  background: @contentBgColor;
+  color: @contentColor;
+}
+
+.header {
+  height: 80px;
+  font-size: 20px;
+  span {
+    padding-left: 10px;
+  }
+  display: flex;
+  align-items: center;
+}
+
+.menuFoldIcon {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.content {
+  width: 100%;
+}
+//:global { /* 不能使用styles.className的形式调用，需要直接写成className=“font12”的形式 */
+//  .font12 {
+//    font-size: @fontSize;
+//  }
+//}
+
+//.composes{ // 继承样式
+//  composes: colorRed font12;
+//}

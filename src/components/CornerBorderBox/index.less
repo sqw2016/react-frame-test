@@ -1,0 +1,60 @@
+@cornerBorderColor: #8a8a8a;
+@baffleColor: #424141;
+
+.box {
+  border: 2px solid @cornerBorderColor;
+  position: relative;
+}
+
+.boxContent {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.verticalBaffle {
+  height: 2px;
+  width: 90%;
+  background: @baffleColor;
+}
+
+.topBaffle {
+  composes: verticalBaffle;
+  position: absolute;
+  top: -2px;
+  left: 5%;
+}
+
+.bottomBaffle {
+  composes: verticalBaffle;
+  position: absolute;
+  bottom: -2px;
+  left: 5%;
+}
+
+.contentContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.baffleBlock {
+  display: inline-block;
+  width: 2px;
+  background: @baffleColor;
+  height: 90%;
+  position: absolute;
+}
+
+.leftBaffle {
+  composes: baffleBlock;
+  position: absolute;
+  top: 5%;
+  left: -2px;
+}
+
+.rightBaffle {
+  composes: baffleBlock;
+  top: 5%;
+  right: -2px;
+}
