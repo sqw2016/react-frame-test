@@ -1,0 +1,45 @@
+@boxPadding: 0px;
+
+.draggableBoxMain {
+  position: absolute;
+  transform: translate(10px, 10px);
+  padding: @boxPadding;
+  border: 1px solid white;
+
+}
+
+.dragBoxClose {
+  position: absolute;
+  top: -5px;
+  right: 5px;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.closeIcon {
+  font-size: 14px;
+}
+
+.boxShadow {
+  width: calc(100% - @boxPadding*2);
+  height: calc(100% - @boxPadding*2);
+  background: red;
+  position: absolute;
+  transition: transform .3s;
+}
+
+.boxContent {
+  width: calc(100% - @boxPadding*2);
+  height: calc(100% - @boxPadding*2);
+  position: absolute;
+  background: blue;
+  z-index: 2;
+}
+
+.dragIconContainer {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  z-index: 3;
+  cursor: nw-resize;
+}

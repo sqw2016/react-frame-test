@@ -10,6 +10,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/', // 不能少,不然发布之后引入的文件会缺少baseUrl,导致引入的都是相对路径，当路由发生变化时，引入的资源路径也发生了变化，导致访问不到资源。
     filename: '[name][hash:base64:8].js'
   },
 
@@ -19,6 +20,7 @@ module.exports = {
     hot: true,
     noInfo: true,
     open: true,
+    // publicPath: '/',
     historyApiFallback: true, // 页面出现cannot GET时增加此项配置
     // lazy: true,
     // overlay: { // 懒加载模式下，控制台输出告警和错误信息
@@ -35,7 +37,6 @@ module.exports = {
       template: './src/index.html'
     }),
   ],
-
   module: {
     rules: [
       {
@@ -95,6 +96,13 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpg|jpeg)$/,
+        // use: [{
+        //   loader: 'file-loader',
+        //   options: {
+        //     name: '[path][name][hash:base64:5].[ext]',
+        //     outputPath: 'images',
+        //   }
+        // }]
         use: ['file-loader']
       }
     ]

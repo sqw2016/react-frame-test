@@ -17,11 +17,11 @@ class SidebarMenu extends React.Component{
   }
 
   componentDidMount() {
-     this.getLocalMatchSup();
+    this.getLocalMatchSup(this.props);
   }
 
-  componentWillReceiveProps() {
-    this.getLocalMatchSup();
+  componentWillReceiveProps(nextProps) {
+    this.getLocalMatchSup(nextProps);
   }
 
   /* 渲染子菜单， menus：子菜单配置， grade：子菜单等级 */
@@ -30,7 +30,7 @@ class SidebarMenu extends React.Component{
       <ul className={styles.subMenu}>
         {
           menus.map(item => (
-            <li>
+            <li key={item.path}>
               <NavLink style={{paddingLeft: (grade+1)*15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
                 {/*<Icon type={item.icon} />*/}
                 <span className={styles.menuItemText} >{item.name}</span>
@@ -61,8 +61,8 @@ class SidebarMenu extends React.Component{
   }
 
   /* 获取当前路径的上层路径 */
-  getLocalMatchSup() {
-    const {routes, location} = this.props;
+  getLocalMatchSup(props) {
+    const {routes, location} = props;
     const { supPath } = this.state;
     const r = [];
     this.getMatchRouter(routes, location, r);
@@ -101,7 +101,7 @@ class SidebarMenu extends React.Component{
               const isOpen = supPath.indexOf(item.path) !== -1;
               return item.name ? (
                 <li key={item.path}>
-                  <NavLink onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path) }} style={{paddingLeft: fold ? 30 : 15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
+                  <NavLink onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path) }} style={{paddingLeft: fold ? 30 : 15}} className={styles.menuItem} to={item.path} >
                     <div style={{overflow: 'hidden', flexShrink: 0}}>
                       <Icon type={item.icon} />
                       <span style={{opacity: fold ? 0 : 1}} className={styles.menuItemText} >{item.name}</span>

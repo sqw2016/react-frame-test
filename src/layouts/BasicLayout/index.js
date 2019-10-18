@@ -1,7 +1,7 @@
 /**
  * Created by lenovo on 2019/9/23.
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { Icon } from 'antd';
 
@@ -43,6 +43,15 @@ class BasicLayout extends React.Component {
     })
   };
 
+  renderRoutes = (routes) => {
+    return routes.map(item => item.redirect ? (
+      <Redirect key={item.path} exact from={item.path} to={item.redirect} />
+    ) : (
+      item.children && item.children.length ? this.renderRoutes(item.children) :
+        <Route key={item.path} exact={item.exact} path={item.path} component={item.component} />
+    ));
+  };
+
   render() {
     const { fold } = this.state;
     const currMenu = this.matchMenu();
@@ -67,11 +76,7 @@ class BasicLayout extends React.Component {
           <div className={styles.content}>
             <Switch>
               {
-                routes.map(item => item.redirect ? (
-                  <Redirect key={item.path} exact from={item.path} to={item.redirect} />
-                ) : (
-                  <Route key={item.path} exact={item.exact} path={item.path} component={item.component} />
-                ))
+                this.renderRoutes(routes)
               }
             </Switch>
           </div>

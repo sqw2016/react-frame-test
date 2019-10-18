@@ -10,11 +10,11 @@ import logo from '../../assets/logo.png';
 function About() {
   return (
     <div>
-      <CornerBorderBox
-        className={styles.box}
-      >
-        <img src={logo} alt=""/>
-      </CornerBorderBox>
+      {/*<CornerBorderBox*/}
+        {/*className={styles.box}*/}
+      {/*>*/}
+        {/*<img src={logo} alt=""/>*/}
+      {/*</CornerBorderBox>*/}
     </div>
   )
 }
