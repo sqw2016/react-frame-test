@@ -47,3 +47,10 @@ export const cartNumChange = (index, num) => {
     num
   }
 };
+
+export const getRequest = (data) => {
+  return {
+    type: 'GET_REQUEST',
+    data,
+  }
+};

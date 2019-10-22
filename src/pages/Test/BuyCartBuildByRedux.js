@@ -3,9 +3,11 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import { cartNumAdd, cartNumMinus, cartNumChange } from '../../components/Todo/actions';
+import { cartNumAdd, cartNumMinus, cartNumChange, getRequest } from '../../components/Todo/actions';
 
-function BuyCartBuildByRedux({ goodsList, numAdd, numMinus, numChange }) {
+import request from '../../utils/request';
+
+function BuyCartBuildByRedux({ goodsList, requestData, numAdd, numMinus, numChange, submit }) {
   const ih = '20px';
   const butStyle = {
     color: 'black',
@@ -18,6 +20,7 @@ function BuyCartBuildByRedux({ goodsList, numAdd, numMinus, numChange }) {
     cursor: 'pointer',
     padding: 0,
   };
+  const { rd } = requestData;
   return (
     <div>
       {
@@ -59,13 +62,20 @@ function BuyCartBuildByRedux({ goodsList, numAdd, numMinus, numChange }) {
           );
         })
       }
+      <button onClick={submit}>确定</button>
+      {
+        rd.length ? rd.map(t => (
+          <div key={t.id}>{t.name}</div>
+        )) : ''
+      }
     </div>
   );
 }
 
-const mapStateToProps = ({ goodsList }) => {
+const mapStateToProps = ({ goodsList, requestData }) => {
   return {
     goodsList,
+    requestData
   }
 };
 
@@ -73,7 +83,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     numAdd: index => { dispatch(cartNumAdd(index)); },
     numMinus: index => { dispatch(cartNumMinus(index)); },
-    numChange: (index, num) => { dispatch(cartNumChange(index, num)); }
+    numChange: (index, num) => { dispatch(cartNumChange(index, num)); },
+    submit: () => {
+      dispatch({
+        type: 'requestData/fetchRequestData'
+      })
+    }
   }
 };
 
