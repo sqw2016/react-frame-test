@@ -1,20 +1,27 @@
 /**
  * Created by lenovo on 2019/10/22.
  */
-import { getRequest } from '../services/main';
+import { getRequest, getGoodsList } from '../services/main';
 
 export default {
   namespace: 'requestData',
   state: {
     rd: [],
+    gl: {}
   },
   effects: {
     *fetchRequestData(action, {call, put}) {
-      console.log(arguments)
       const data = yield call(getRequest);
       yield put({
-        type: 'requestData/saveRequest',
+        type: 'saveRequest',
         data,
+      })
+    },
+    *fetchGoodsList(action, {call, put}) {
+      const data = yield call(getGoodsList, action.id);
+      yield put({
+        type: 'saveGoodsList',
+        data
       })
     }
   },
@@ -23,6 +30,12 @@ export default {
       return {
         ...state,
         rd: data ? data.data.hotGoodsList : []
+      }
+    },
+    saveGoodsList(state, {data}) {
+      return {
+        ...state,
+        gl: data
       }
     }
   }

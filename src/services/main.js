@@ -7,6 +7,9 @@ export function getRequest() {
   return request('home/index');
 }
 
-export function getPost() {
-  return request('home/index');
+
+// https://www.sumeishop.net/wx/goods/category?id=1036012
+
+export function getGoodsList(id) {
+  return request('goods/category', 'GET', { params: {id}});
 }

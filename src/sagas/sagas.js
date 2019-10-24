@@ -21,7 +21,10 @@ function *mySaga() {
   const effectNames = Object.keys(model.effects);
 
   for (let i = 0, len = effectNames.length; i < len; i++) {
-    yield takeEvery(`${model.namespace}/${effectNames[i]}`, action => model.effects[effectNames[i]](action, {call, put}));
+    yield takeEvery(`${model.namespace}/${effectNames[i]}`, action => model.effects[effectNames[i]](action, {call, put: function(action) {
+      action.type = model.namespace + '/' + action.type;
+      return put(action);
+    }}));
   }
 
   // yield takeEvery("REQUEST_DATA_FETCH", fetchRequestData);

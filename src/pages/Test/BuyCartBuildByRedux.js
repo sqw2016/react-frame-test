@@ -87,6 +87,10 @@ const mapDispatchToProps = (dispatch) => {
     submit: () => {
       dispatch({
         type: 'requestData/fetchRequestData'
+      });
+      dispatch({
+        type: 'requestData/fetchGoodsList',
+        id: 1036012
       })
     }
   }
