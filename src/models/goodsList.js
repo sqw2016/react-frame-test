@@ -34,6 +34,7 @@ export default {
   },
   reducers: {
     goodsAdd(state, action) {
+
       const { gl } = state;
       gl[action.index].num++;
 

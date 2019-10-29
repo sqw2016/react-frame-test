@@ -11,7 +11,6 @@ import model from '../models'; // 导入models
 
 const obj = {};
 obj[model.namespace] = function(state = model.state, action) {
-  console.log(model)
   const reducerNames = Object.keys(model.reducers);
 
   for (let i = 0, len = reducerNames.length; i < len; i++) {

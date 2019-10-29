@@ -21,10 +21,11 @@ function BuyCartBuildByRedux({ goodsList, requestData, numAdd, numMinus, numChan
     padding: 0,
   };
   const { rd } = requestData;
+  console.log(rd);
   return (
     <div>
       {
-        goodsList.map((item, index) => {
+        goodsList.gl.map((item, index) => {
           return (
             <div style={{
               width: 400,
@@ -73,6 +74,7 @@ function BuyCartBuildByRedux({ goodsList, requestData, numAdd, numMinus, numChan
 }
 
 const mapStateToProps = ({ goodsList, requestData }) => {
+  console.log(goodsList)
   return {
     goodsList,
     requestData
@@ -81,7 +83,12 @@ const mapStateToProps = ({ goodsList, requestData }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    numAdd: index => { dispatch(cartNumAdd(index)); },
+    numAdd: index => {
+      dispatch({
+        type: 'goodsList/goodsAdd',
+        index,
+      })
+    },
     numMinus: index => { dispatch(cartNumMinus(index)); },
     numChange: (index, num) => { dispatch(cartNumChange(index, num)); },
     submit: () => {

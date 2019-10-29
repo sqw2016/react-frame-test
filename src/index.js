@@ -5,14 +5,18 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import todoApp from './reducers';
+// import todoApp from './reducers';
 import createSagaMiddleware from 'redux-saga';
 
 import BasicRouter from './app';
 import './global.less';
 import mySaga from './sagas/sagas';
 
-const sagaMiddleware = createSagaMiddleware();
+import goodsList from './models/goodsList';
+import requestData from './models';
+import app from './components/ReduxSaga';
+
+// const sagaMiddleware = createSagaMiddleware();
 
 
 const log = store => next => action => {
@@ -22,10 +26,15 @@ const log = store => next => action => {
   return r;
 };
 
+app.load(goodsList);
+app.load(requestData);
 
-const store = createStore(todoApp, applyMiddleware(log, sagaMiddleware));
+app.start();
 
-sagaMiddleware.run(mySaga);
+const ReduxSaga = app.router;
+// const store = createStore(todoApp, applyMiddleware(log, sagaMiddleware));
+
+// sagaMiddleware.run(mySaga);
 
 // let next = store.dispatch;
 
@@ -37,8 +46,8 @@ sagaMiddleware.run(mySaga);
 // };
 
 ReactDom.render(
-  <Provider store={store}>
+  <ReduxSaga>
     <BasicRouter />
-  </Provider>,
+  </ReduxSaga>,
   document.getElementById('root')
 );
