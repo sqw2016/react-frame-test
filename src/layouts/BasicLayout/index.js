@@ -9,14 +9,19 @@ import styles from './index.less';
 import routes from '../../router';
 import SidebarMenu from '../../components/SidebarMenu';
 
+
+
 class BasicLayout extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      fold: false
-    }
+      fold: false,
+    };
+    this.renderRoutes(routes);
   }
+
+  renderRoute = [];
 
   getMatchRouter(routes, location) {
     for (let i = 0, len = routes.length; i < len; i++) {
@@ -44,12 +49,22 @@ class BasicLayout extends React.Component {
   };
 
   renderRoutes = (routes) => {
-    return routes.map(item => item.redirect ? (
-      <Redirect key={item.path} exact from={item.path} to={item.redirect} />
-    ) : (
-      item.children && item.children.length ? this.renderRoutes(item.children) :
-        <Route key={item.path} exact={item.exact} path={item.path} component={item.component} />
-    ));
+    routes.forEach(item => {
+        if (item.redirect) {
+          this.renderRoute.push(
+            <Redirect key={item.path} exact={item.exact} from={item.path} to={item.redirect} />
+          );
+        }
+        if (item.component) {
+          this.renderRoute.push(
+            <Route key={item.path} exact={item.exact} path={item.path} component={item.component()} />
+          );
+        }
+        if (item.children && item.children.length) {
+          this.renderRoutes(item.children);
+        }
+      }
+    )
   };
 
   render() {
@@ -57,7 +72,6 @@ class BasicLayout extends React.Component {
     const currMenu = this.matchMenu();
     return (
       <div className={styles.main}>
-
         <SidebarMenu
           fold={fold}
           routes={routes}
@@ -69,14 +83,16 @@ class BasicLayout extends React.Component {
           <div className={styles.header}>
             <Icon onClick={this.changeFold} type={fold ? 'menu-unfold' : 'menu-fold'} className={styles.menuFoldIcon} />
             <div>
-              <Icon type={currMenu.icon} />
+              {
+                currMenu.icon ? <Icon type={currMenu.icon} /> : ''
+              }
               <span>{currMenu.name}</span>
             </div>
           </div>
           <div className={styles.content}>
             <Switch>
               {
-                this.renderRoutes(routes)
+                this.renderRoute
               }
             </Switch>
           </div>

@@ -4,10 +4,12 @@
 import React from 'react';
 import { Select, Button } from 'antd';
 
-import styles from './FluidBlowdown.less';
-import ChartBox from '../../components/ChartBox/ChartBox';
+import styles from './FluidBlowDown.less';
+import { BasicGauge, ShadowGauge } from '../../components/ChartBox';
+import DragContainer from '../../components/DragContainer';
 
 const { Option } = Select;
+
 
 const PHOption = {
   title: '硫酸雾PH值',
@@ -127,7 +129,19 @@ const option3 = {
   data: [{value: 0.01, name: 'ug/m³'}]
 };
 
-class FireControl extends React.Component {
+class FluidBlowDown extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      width: 200
+    }
+  }
+
+  resizeOver = (layout) => {
+    this.setState({
+      width: this.state.width + 1
+    })
+  };
 
   render() {
     return (
@@ -159,58 +173,81 @@ class FireControl extends React.Component {
           </Select>
           <Button style={{marginLeft: 20}} type="primary">确定</Button>
         </div>
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={PHOption}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          type="basic"
-          chartOptions={SuspendedSolidsOption}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={nitrogenOption}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={phosphorusOption}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={option1}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={option2}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={option3}
-        />
-        <ChartBox
-          chartWidth={200}
-          chartHeight={200}
-          className={styles.chartBox}
-          chartOptions={option0}
-        />
+        <DragContainer
+          rowHeight={100}
+          // className={styles.layout}
+          onResizeStop={this.resizeOver}
+          cols={12}
+          width={'100%'}
+        >
+          <div
+            key="a"
+            data-grid={{x: 0, y: 0, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...PHOption}
+            />
+          </div>
+          <div
+            key="b"
+            data-grid={{x: 2, y: 0, w: 2, h: 2}}
+          >
+            <BasicGauge
+              {...SuspendedSolidsOption}
+            />
+          </div>
+          <div
+            key="c"
+            data-grid={{x: 4, y: 0, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...nitrogenOption}
+            />
+          </div>
+          <div
+            key="d"
+            data-grid={{x: 6, y: 0, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...phosphorusOption}
+            />
+          </div>
+          <div
+            key="e"
+            data-grid={{x: 8, y: 0, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...option1}
+            />
+          </div>
+          <div
+            key="f"
+            data-grid={{x: 10, y: 0, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...option2}
+            />
+          </div>
+          <div
+            key="g"
+            data-grid={{x: 0, y: 2, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...option3}
+            />
+          </div>
+          <div
+            key="h"
+            data-grid={{x: 2, y: 2, w: 2, h: 2}}
+          >
+            <ShadowGauge
+              {...option0}
+            />
+          </div>
+        </DragContainer>
       </div>
     );
   }
 }
 
-export default FireControl;
+export default FluidBlowDown;

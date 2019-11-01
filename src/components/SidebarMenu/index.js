@@ -20,26 +20,48 @@ class SidebarMenu extends React.Component{
     this.getLocalMatchSup(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.getLocalMatchSup(nextProps);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   this.getLocalMatchSup(nextProps);
+  // }
 
   /* 渲染子菜单， menus：子菜单配置， grade：子菜单等级 */
   renderChildMenu(menus, grade = 1) {
     return menus && menus.length ? (
       <ul className={styles.subMenu}>
         {
-          menus.map(item => (
-            <li key={item.path}>
-              <NavLink style={{paddingLeft: (grade+1)*15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
-                {/*<Icon type={item.icon} />*/}
-                <span className={styles.menuItemText} >{item.name}</span>
-              </NavLink>
-              {
-                this.renderChildMenu(item.children, grade + 1)
-              }
-            </li>
-          ))
+          menus.map(item => {
+            const { supPath } = this.state;
+            const isOpen = supPath.indexOf(item.path) !== -1;
+            return (
+              <li key={item.path}>
+                {
+                  item.children && item.children.length ? (
+                    <NavLink
+                      style={{paddingLeft: (grade+1)*15}}
+                      activeClassName={styles.menuItemActive}
+                      className={styles.menuItem}
+                      to={item.path}
+                      onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path, false) }}
+                    >
+                      <div>
+                        { item.icon ? <Icon type={item.icon} /> : ''}
+                        <span className={styles.menuItemText} >{item.name}</span>
+                      </div>
+                      <Icon type={isOpen ? 'up' : 'down'} />
+                    </NavLink>
+                  ) : (
+                    <NavLink style={{paddingLeft: (grade+1)*15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
+                      {/*<Icon type={item.icon} />*/}
+                      <span className={styles.menuItemText} >{item.name}</span>
+                    </NavLink>
+                  )
+                }
+                {
+                  isOpen ? this.renderChildMenu(item.children, grade + 1) : ''
+                }
+              </li>
+            )
+          })
         }
       </ul>
     ) : '';
@@ -73,13 +95,17 @@ class SidebarMenu extends React.Component{
     }
   }
 
-  menuTitleClick(path) {
-    const { supPath } = this.state;
+  menuTitleClick(path, isFirst = true) {
+    let { supPath } = this.state;
     const index = supPath.indexOf(path);
     if (index !== -1) {
       supPath.splice(index, 1);// 删除元素
     } else { // 添加元素
-      supPath[0] = path;
+      if (isFirst) {
+        supPath = [path];
+      } else {
+        supPath.push(path);
+      }
     }
     this.setState({
       supPath: [...supPath]

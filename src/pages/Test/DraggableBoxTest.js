@@ -4,6 +4,7 @@
 import React from "react";
 import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
+import CornerBorderBox from '../../components/CornerBorderBox';
 
 import styles from './index.less';
 
@@ -26,11 +27,12 @@ class DraggedBoxTest extends React.PureComponent {
   }
 
   generateDOM() {
+    const { layout } = this.state;
     return _.map(_.range(this.props.items), function(i) {
       return (
-        <div className={styles.text} key={i}>
+        <CornerBorderBox className={styles.text} key={i} data-grid={layout[i]}>
           {i}
-        </div>
+        </CornerBorderBox>
       );
     });
   }
@@ -57,7 +59,6 @@ class DraggedBoxTest extends React.PureComponent {
   render() {
     return (
       <ReactGridLayout
-        layout={this.state.layout}
         onLayoutChange={this.onLayoutChange}
         {...this.props}
       >

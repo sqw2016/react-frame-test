@@ -1,135 +1,137 @@
 /**
  * Created by lenovo on 2019/9/25.
  */
-import About from './pages/About';
-import BasicLayout from './layouts/BasicLayout';
-import FireControl from './pages/FireControl/FireControl';
-import ElectricManage from './pages/ElectricManage/ElectricManage';
-import GasBlowDown from './pages/GasBlowdown/GasBlowdown';
-import FluidBlowDown from './pages/FluidBlowdown/FluidBlowdown';
-import EquipManage from './pages/EquipManage/EquipManage';
-import ReduxTest from './pages/Test/ReduxTest'
-import BuyCartBuildByRedux from './pages/Test/BuyCartBuildByRedux';
-import DraggableBox from './pages/Test/DraggableBoxTest';
 
 const routes = [{
   path: '/',
+  exact: true,
   redirect: '/monitor/fire-control',
 }, {
   name: '安全管理',
   path: '/monitor',
   icon: 'monitor',
-  component: BasicLayout,
   children: [{
     name: '消防安全',
     path: '/monitor/fire-control',
-    component: FireControl,
+    component: () => require('./pages/FireControl/FireControl').default,
   }, {
     name: '有害物质外泄',
     path: '/monitor/harmful',
-    component: About,
+    component: () => require('./pages/About').default,
   },
     {
     name: '放射危害',
     path: '/monitor/radioactivity',
-    component: About,
+    component: () => require('./pages/About').default,
 
   }]
 }, {
   name: '环保管理',
   path: '/environmental',
   icon: 'fund',
-  component: BasicLayout,
   children: [{
     name: '工业废水排放',
     path: '/environmental/fluid-water',
-    component: FluidBlowDown,
+    component: () => require('./pages/FluidBlowDown/FluidBlowDown').default,
   },
     {
       name: '工业废气排放',
       path: '/environmental/fluid-gas',
-      component: GasBlowDown,
+      component: () => require('./pages/GasBlowdown/GasBlowdown').default,
     },
     {
     name: '噪声污染',
     path: '/environmental/noise',
-    component: About,
+    component: () => require('./pages/About').default,
   }],
 }, {
   name: '节能管理',
   path: '/energy',
   icon: 'bulb',
-  component: BasicLayout,
   children: [{
     name: '用电管理',
+    exact: true,
     path: '/energy/electric',
-    component: ElectricManage,
+    // redirect: '/energy/electric-manage',
+    children: [
+      {
+        name: '用电管理',
+        path: '/energy/electric-manage',
+        component: () => require('./pages/ElectricManage/ElectricManage').default,
+      },
+      {
+        name: '能耗统计分析',
+        path: '/energy/electric-analysis',
+        component: () => require('./pages/EnergyConsumptionStatistic/EnergyConsumptionStatistic').default,
+      }
+    ]
   }, {
     name: '用水管理',
     path: '/energy/water',
-    component: About,
+    component: () => require('./pages/About').default,
   }, {
     name: '用气管理',
     path: '/energy/gas',
-    component: About,
+    component: () => require('./pages/About').default,
   }]
 }, {
   name: '设备管理',
   path: '/equip',
   icon: 'cluster',
-  component: BasicLayout,
   children: [{
     name: '设备信息管理',
     path: '/equip/basic',
-    component: EquipManage,
+    component: () => require('./pages/EquipManage/EquipManage').default,
   }, {
     name: '设备传感器关联',
     path: '/equip/sensor',
-    component: About,
+    component: () => require('./pages/About').default,
   }, {
     name: '设备指标参数管理',
     path: '/equip/target',
-    component: About,
+    component: () => require('./pages/About').default,
   }]
 }, {
   name: '系统配置管理',
   path: '/setting',
   icon: 'setting',
-  component: BasicLayout,
   children: [{
     name: '组织机构管理',
     path: '/setting/institution',
-    component: About,
+    component: () => require('./pages/About').default,
   }, {
     name: '用户权限管理',
     path: '/setting/author',
-    component: About,
+    component: () => require('./pages/About').default,
   }, {
     name: '资源权限管理',
     path: '/setting/resource',
-    component: About,
+    component: () => require('./pages/About').default,
   }, {
     name: '数据采集配置',
     path: '/setting/collect',
-    component: About,
+    component: () => require('./pages/About').default,
   }]
 }, {
   name: '测试',
   path: '/test',
   icon: 'experiment',
-  component: BasicLayout,
   children: [{
     name: 'Redux测试',
     path: '/test/redux',
-    component: ReduxTest,
+    component: () => require('./pages/Test/ReduxTest').default,
   }, {
     name: 'Redux购物车',
     path: '/test/cart',
-    component: BuyCartBuildByRedux,
+    component: () => require('./pages/Test/BuyCartBuildByRedux').default,
   }, {
     name: '可拖拽盒子',
     path: '/test/drag',
-    component: DraggableBox,
+    component: () => require('./pages/Test/DraggableBoxTest').default,
+  }, {
+    name: '图片预览插件',
+    path: '/test/swipe',
+    component: () => require('./pages/Test/PhotoSwipeTest').default,
   }]
 }];
 

@@ -4,6 +4,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MinCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -11,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/', // 不能少,不然发布之后引入的文件会缺少baseUrl,导致引入的都是相对路径，当路由发生变化时，引入的资源路径也发生了变化，导致访问不到资源。
-    filename: '[name][hash:base64:8].js'
+    filename: 'js/[name][hash:8].js'
   },
 
   devServer: {
@@ -34,14 +35,19 @@ module.exports = {
     new CleanWebpackPlugin(), // 每次编译清空输出文件夹
     new HtmlWebpackPlugin({ //根据webpack打包规则生成html模板
       title: 'React-Frame-Test',
+      filename: 'index.html',
       template: './src/index.html'
     }),
+    new MinCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[id].css'
+    })
   ],
   module: {
     rules: [
       {
         test: /\.js$/,
-        // exclude: /node_modules/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -62,7 +68,8 @@ module.exports = {
         test: /\.(less|css)$/, // 编译自己写的css，less
         exclude: /node_modules/,
         use: [
-          'style-loader',
+          // 'style-loader',
+          MinCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
@@ -107,7 +114,14 @@ module.exports = {
         //     outputPath: 'images',
         //   }
         // }]
-        use: ['file-loader']
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'static/[name][hash:8].[ext]'
+            }
+          }
+        ]
       }
     ]
   }

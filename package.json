@@ -4,7 +4,7 @@
   "description": "Try To Build A React Frame",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --color --progress",
+    "start": "webpack-dev-server --color --progress --host 192.168.131.162 --disableHostCheck",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -34,6 +34,7 @@
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.15",
+    "mini-css-extract-plugin": "^0.8.0",
     "moment": "^2.24.0",
     "postcss": "^7.0.18",
     "postcss-loader": "^3.0.0",
@@ -43,6 +44,7 @@
     "react-dom": "^16.9.0",
     "react-draggable": "^4.0.3",
     "react-grid-layout": "^0.16.6",
+    "react-photoswipe": "^1.3.0",
     "react-redux": "^7.1.1",
     "react-resizable": "^1.8.0",
     "react-router": "^5.0.1",

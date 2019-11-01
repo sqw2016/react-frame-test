@@ -6,7 +6,8 @@ import { Select, Button, DatePicker } from 'antd';
 import moment from 'moment';
 
 import styles from './GasBlowdown.less';
-import ChartBox from '../../components/ChartBox/ChartBox';
+import { LineChart, ShadowGauge } from '../../components/ChartBox';
+import DragContainer from '../../components/DragContainer';
 
 const { Option } = Select;
 
@@ -179,7 +180,7 @@ const monitorTargets = [
   },
 ];
 
-class FireControl extends React.Component {
+class FluidBlowDown extends React.Component {
 
   constructor(props) {
     super(props);
@@ -219,7 +220,7 @@ class FireControl extends React.Component {
     const target = monitorTargets[tabIndex];
 
     return (
-      <div className={styles.main}>
+      <div>
         <div style={{width: '100%', marginBottom: 20}}>
           <span>请选择厂区：</span>
           <Select defaultValue="1">
@@ -291,53 +292,63 @@ class FireControl extends React.Component {
             <li onClick={this.tabChange.bind(null, 2)} className={ tabIndex === 2 ? styles.tabActive : styles.liColor}>颗粒物</li>
           </ul>
         </div>
-        <div className={styles.lineChartContainer}>
-          <ChartBox
-            type="line"
-            title={`${time} A厂区${target.name}浓度监测`}
-            className={styles.lineChartBox}
-            xData={xData}
-            series={[
-              {
-                name: '一厂',
-                type: 'line',
-                data: target.lineData[0],
-                markLine: {
-                  silent: true,
-                  label: {
-                    textStyle: {
-                      fontSize: 20
-                    }
-                  },
-                  symbolSize: 15,
-                  lineStyle: {
-                    color: 'red',
-                    type: 'dashed',
-                    width: 1.5
-                  },
-                  data: [{
-                    yAxis: target.markLine
-                  }]
-                }
-              },
-              {
-                name: '二厂',
-                type: 'line',
-                data: target.lineData[1]
-              },
-              {
-                name: '三厂',
-                type: 'line',
-                data: target.lineData[2]
-              },
-            ]}
-            showToolTipOver={this.sulfurMouseOver}
-            color={color}
-          />
-          <div className={styles.lineChartDetail}>
-            <ChartBox
-              className={styles.chartBox}
-              chartOptions={{
+        <DragContainer
+          cols={12}
+          rowHeight={100}
+          onResizeStop={() => {this.setState({resize: 1})}}
+          width={'100%'}
+        >
+          <div
+            key="1"
+            data-grid={{x: 0, y: 0, w: 8, h: 6}}
+          >
+            <LineChart
+              title={`${time} A厂区${target.name}浓度监测`}
+              xData={xData}
+              series={[
+                {
+                  name: '一厂',
+                  type: 'line',
+                  data: target.lineData[0],
+                  markLine: {
+                    silent: true,
+                    label: {
+                      textStyle: {
+                        fontSize: 20
+                      }
+                    },
+                    symbolSize: 15,
+                    lineStyle: {
+                      color: 'red',
+                      type: 'dashed',
+                      width: 1.5
+                    },
+                    data: [{
+                      yAxis: target.markLine
+                    }]
+                  }
+                },
+                {
+                  name: '二厂',
+                  type: 'line',
+                  data: target.lineData[1]
+                },
+                {
+                  name: '三厂',
+                  type: 'line',
+                  data: target.lineData[2]
+                },
+              ]}
+              showToolTipOver={this.sulfurMouseOver}
+              color={color}
+            />
+          </div>
+          <div
+            key="2"
+            data-grid={{x: 8, y: 0, w: 2, h: 3}}
+          >
+            <ShadowGauge
+              {...{
                 title: `一厂${target.name}浓度`,
                 min: 0,
                 max: target.max,
@@ -346,9 +357,13 @@ class FireControl extends React.Component {
                 data: [{value: currOver[0], name: 'mg/m³'}]
               }}
             />
-            <ChartBox
-              className={styles.chartBox}
-              chartOptions={{
+          </div>
+          <div
+            key="3"
+            data-grid={{x: 10, y: 0, w: 2, h: 3}}
+          >
+            <ShadowGauge
+              {...{
                 title: `二厂${target.name}浓度`,
                 min: 0,
                 max: target.max,
@@ -357,9 +372,13 @@ class FireControl extends React.Component {
                 data: [{value: currOver[1], name: 'mg/m³'}]
               }}
             />
-            <ChartBox
-              className={styles.chartBox}
-              chartOptions={{
+          </div>
+          <div
+            key="4"
+            data-grid={{x: 8, y: 2, w: 2, h: 3}}
+          >
+            <ShadowGauge
+              {...{
                 title: `三厂${target.name}浓度`,
                 min: 0,
                 max: target.max,
@@ -369,10 +388,10 @@ class FireControl extends React.Component {
               }}
             />
           </div>
-        </div>
+        </DragContainer>
       </div>
     );
   }
 }
 
-export default FireControl;
+export default FluidBlowDown;
