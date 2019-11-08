@@ -7,7 +7,7 @@ import AddTodo from '../../components/Todo/AddTodo';
 import VisibleTodoList from '../../components/Todo/VisibleTodoList';
 import { connect } from 'react-redux';
 
-function ReduxTest({cart}) {
+function ReduxTest({ cart }) {
   return (
     <div>
       <AddTodo />
@@ -16,7 +16,7 @@ function ReduxTest({cart}) {
       <div>
         <h1>购物车</h1>
         {
-          cart.map((item, index) => {
+          cart.length ? cart.map((item, index) => {
             return (
               <div style={{
                 width: 400,
@@ -34,7 +34,7 @@ function ReduxTest({cart}) {
                 </div>
               </div>
             );
-          })
+          }) : ''
         }
       </div>
     </div>
@@ -42,8 +42,9 @@ function ReduxTest({cart}) {
 }
 
 const mapStateToProps = ({ goodsList }) => {
+  console.log(goodsList)
   return {
-    cart: goodsList.filter( g => g.num > 0 )
+    cart: goodsList.gl.filter( g => g.num > 0 )
   }
 };
 

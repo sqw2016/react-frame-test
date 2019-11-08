@@ -1,37 +1,27 @@
 /**
  * Created by lenovo on 2019/10/31.
  */
-/**
- * Created by lenovo on 2019/10/31.
- */
 import React from 'react';
 import ChartBox from './ChartBox';
 import { fontColor, fontSize } from './theme';
-import { splitJointTip } from './util';
 
 class BarChart extends React.Component {
 
   chart(props) {
-    const { xData, series, color, unit = 'mg/m³' } = props;
-
+    const {
+      xData,
+      series,
+      xAxisShow = true,
+      yAxisShow = true,
+      unit = 'mg/m³',
+      yAxisMin
+    } = props;
 
     return {
-      grid: {
-        left: '8%',
-        right: '8%',
-        top: 70,
-        bottom: 70
-      },
-      tooltip : {
-        trigger: 'axis',
-        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-          type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-        }
-      },
-      color,
       xAxis: [
         {
           type: 'category',
+          show: xAxisShow,
           axisLine: {
             lineStyle: {
               color: fontColor,
@@ -52,7 +42,9 @@ class BarChart extends React.Component {
         axisLabel: {
           fontSize,
         },
+        show: yAxisShow,
         type: 'value',
+        min: yAxisMin,
         splitLine: {
           lineStyle: {
             color: '#37333a',

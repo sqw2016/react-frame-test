@@ -3,12 +3,15 @@
  */
 import React, { Fragment } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import { Icon } from 'antd';
+import { Icon, Select } from 'antd';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import styles from './index.less';
 import routes from '../../router';
 import SidebarMenu from '../../components/SidebarMenu';
-
+import Language from '../../components/Language';
+import { hasLogin } from '../../utils/user';
 
 
 class BasicLayout extends React.Component {
@@ -19,6 +22,10 @@ class BasicLayout extends React.Component {
       fold: false,
     };
     this.renderRoutes(routes);
+  }
+
+  componentDidMount() {
+    this.hasLogin = hasLogin();
   }
 
   renderRoute = [];
@@ -38,6 +45,7 @@ class BasicLayout extends React.Component {
   }
 
   matchMenu() {
+    console.log(this.props);
     const { location } = this.props;
     return this.getMatchRouter(routes, location);
   }
@@ -67,9 +75,19 @@ class BasicLayout extends React.Component {
     )
   };
 
+  languageChange = (val) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/changeLanguage',
+      data: val
+    })
+  };
+
   render() {
     const { fold } = this.state;
     const currMenu = this.matchMenu();
+    const { global } = this.props;
+
     return (
       <div className={styles.main}>
         <SidebarMenu
@@ -81,12 +99,29 @@ class BasicLayout extends React.Component {
         <div className={styles.contentBody}>
 
           <div className={styles.header}>
-            <Icon onClick={this.changeFold} type={fold ? 'menu-unfold' : 'menu-fold'} className={styles.menuFoldIcon} />
-            <div>
+            <div className={styles.headerLeftTool}>
+              <Icon onClick={this.changeFold} type={fold ? 'menu-unfold' : 'menu-fold'} className={styles.menuFoldIcon} />
+              <div>
+                {
+                  currMenu.icon ? <Icon type={currMenu.icon} /> : ''
+                }
+                <Language id={`menu.${currMenu.name}`} />
+              </div>
+            </div>
+            <div className={styles.headerRightTool}>
+              <Select onChange={this.languageChange} defaultValue={global.language} className={styles.select}>
+                <Select.Option value="EN">English</Select.Option>
+                <Select.Option value="CN">中文</Select.Option>
+              </Select>
               {
-                currMenu.icon ? <Icon type={currMenu.icon} /> : ''
+                this.hasLogin ? (
+                  ''
+                ) : (
+                  <Link to="/user/login">
+                    <Language id="user.login"/>
+                  </Link>
+                )
               }
-              <span>{currMenu.name}</span>
             </div>
           </div>
           <div className={styles.content}>
@@ -102,4 +137,10 @@ class BasicLayout extends React.Component {
   }
 }
 
-export default BasicLayout;
+const mapStateToProps = ({ global }) => {
+  return {
+    global
+  }
+};
+
+export default connect(mapStateToProps)(BasicLayout);

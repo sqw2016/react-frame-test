@@ -1,0 +1,31 @@
+/**
+ * Created by lenovo on 2019/11/5.
+ */
+export default {
+  'menu.security-management': '安全管理',
+  'menu.fire-control': '消防安全',
+  'menu.harmful-substance': '有害物质外泄',
+  'menu.radioactive': '放射危害',
+  'menu.environmental-protection': '环保管理',
+  'menu.industrial-sewage': '工业废水排放',
+  'menu.industrial-gas': '工业废气排放',
+  'menu.noise': '噪声污染',
+  'menu.energy-conservation': '节能管理',
+  'menu.electricity-use': '用电管理',
+  'menu.statistical-analysis-energy-consumption': '能耗统计分析',
+  'menu.water-use': '用水管理',
+  'menu.gas-use': '用气管理',
+  'menu.equipment': '设备管理',
+  'menu.equipment-info': '设备信息管理',
+  'menu.sensor-relate': '设备传感器关联',
+  'menu.index-manage': '设备指标参数管理',
+  'menu.sys-setting': '系统配置管理',
+  'menu.institution-manage': '组织机构管理',
+  'menu.author-manage': '用户权限管理',
+  'menu.resource-permission': '资源权限管理',
+  'menu.collection-config': '数据采集配置',
+  'menu.test': '测试',
+  'menu.redux-test': 'Redux测试',
+  'menu.draggable-box': '可拖拽盒子',
+  'menu.image-preview': '图片预览',
+}

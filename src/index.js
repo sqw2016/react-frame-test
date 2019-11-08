@@ -6,14 +6,13 @@ import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 // import todoApp from './reducers';
-import createSagaMiddleware from 'redux-saga';
 
 import BasicRouter from './app';
 import './global.less';
-import mySaga from './sagas/sagas';
 
 import goodsList from './models/goodsList';
 import requestData from './models';
+import global from './models/global';
 import app from './components/ReduxSaga';
 
 // const sagaMiddleware = createSagaMiddleware();
@@ -28,6 +27,7 @@ const log = store => next => action => {
 
 app.load(goodsList);
 app.load(requestData);
+app.load(global);
 
 app.start();
 

@@ -58,7 +58,6 @@ class BasicGauge extends React.Component {
   }
 
   render() {
-    console.log(this.chart)
     return (
       <ChartBox chart={this.chart} {...this.props} />
     );

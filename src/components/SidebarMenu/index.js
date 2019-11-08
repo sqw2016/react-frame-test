@@ -7,12 +7,17 @@ import { Icon } from 'antd';
 
 import logo from '../../assets/logo.png';
 import styles from './index.less';
+import Language, { getTextByKey } from '../Language';
+
+const FOLDSIDERWIDTH = 80;
+const UNFOLDSIDERWIDTH = 250;
 
 class SidebarMenu extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      supPath: []
+      supPath: [],
+      overPath: [], // 鼠标悬浮显示的路由
     }
   }
 
@@ -26,14 +31,31 @@ class SidebarMenu extends React.Component{
 
   /* 渲染子菜单， menus：子菜单配置， grade：子菜单等级 */
   renderChildMenu(menus, grade = 1) {
+    const { fold } = this.props;
+    const foldStyle = fold ? {
+      left: grade === 1 ? FOLDSIDERWIDTH + 5 : UNFOLDSIDERWIDTH + 5
+    } : {};
     return menus && menus.length ? (
-      <ul className={styles.subMenu}>
+      <ul style={foldStyle} className={fold ? styles.unFoldSubMenu : styles.subMenu}>
         {
           menus.map(item => {
-            const { supPath } = this.state;
-            const isOpen = supPath.indexOf(item.path) !== -1;
+            const isOpen = this.isChildShow(item.path);
             return (
-              <li key={item.path}>
+              <li
+                key={item.path}
+                onMouseEnter={
+                  (e) => {
+                    e.preventDefault();
+                    this.menuItemMouseEnter(item.path);
+                  }
+                }
+                onMouseLeave={
+                  e => {
+                    e.preventDefault();
+                    this.menuItemMouseLeave(item.path);
+                  }
+                }
+              >
                 {
                   item.children && item.children.length ? (
                     <NavLink
@@ -41,18 +63,23 @@ class SidebarMenu extends React.Component{
                       activeClassName={styles.menuItemActive}
                       className={styles.menuItem}
                       to={item.path}
+                      title={getTextByKey(`menu.${item.name}`)}
                       onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path, false) }}
                     >
-                      <div>
+                      <div style={{width: '90%'}}>
                         { item.icon ? <Icon type={item.icon} /> : ''}
-                        <span className={styles.menuItemText} >{item.name}</span>
+                        <div className={styles.menuItemText} >
+                          <Language id={`menu.${item.name}`} />
+                        </div>
                       </div>
-                      <Icon type={isOpen ? 'up' : 'down'} />
+                      <Icon type={fold ? 'right' : isOpen ? 'up' : 'down'} />
                     </NavLink>
                   ) : (
-                    <NavLink style={{paddingLeft: (grade+1)*15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
+                    <NavLink title={getTextByKey(`menu.${item.name}`)} style={{paddingLeft: (grade+1)*15}} activeClassName={styles.menuItemActive} className={styles.menuItem} to={item.path} >
                       {/*<Icon type={item.icon} />*/}
-                      <span className={styles.menuItemText} >{item.name}</span>
+                      <div className={styles.menuItemText} >
+                        <Language id={`menu.${item.name}`} />
+                      </div>
                     </NavLink>
                   )
                 }
@@ -82,6 +109,13 @@ class SidebarMenu extends React.Component{
     return false;
   }
 
+  // 判断子元素是否显示
+  isChildShow(path) {
+    const { supPath, overPath } = this.state;
+    const { fold } = this.props;
+    return fold ? overPath.indexOf(path) !== -1 : supPath.indexOf(path) !== -1;
+  }
+
   /* 获取当前路径的上层路径 */
   getLocalMatchSup(props) {
     const {routes, location} = props;
@@ -96,6 +130,8 @@ class SidebarMenu extends React.Component{
   }
 
   menuTitleClick(path, isFirst = true) {
+    const { fold } = this.props;
+    if (!fold) return;
     let { supPath } = this.state;
     const index = supPath.indexOf(path);
     if (index !== -1) {
@@ -112,11 +148,45 @@ class SidebarMenu extends React.Component{
     })
   }
 
+  // 鼠标进入菜单项
+  menuItemMouseEnter(path, isFirst) {
+    const { fold } = this.props;
+    if (!fold) return;
+    let { overPath } = this.state;
+    const index = overPath.indexOf(path);
+    if(isFirst) {
+      overPath = [path];
+    } else if (index === -1) {
+      overPath.push(path);
+    }
+    this.setState({
+      overPath: [...overPath]
+    })
+  }
+  // 鼠标离开菜单项
+  menuItemMouseLeave(path, isFirst) {
+    const { fold } = this.props;
+    if (!fold) return;
+    let { overPath } = this.state;
+    const index = overPath.indexOf(path);
+    if (isFirst) {
+      overPath = [];
+    } else {
+      index > 0 && overPath.splice(index, 1);
+    }
+    setTimeout(() => {
+      this.setState({
+        overPath
+      })
+    }, 100)
+
+  }
+
   render() {
     const {fold, routes} = this.props;
-    const { supPath } = this.state;
+    console.log(this.state.overPath);
     return (
-      <div style={{width: `${fold ? 80 : 250}px`}} className={styles.sidebar}>
+      <div style={{width: `${fold ? FOLDSIDERWIDTH : UNFOLDSIDERWIDTH}px`}} className={styles.sidebar}>
         <NavLink className={styles.logoBox} activeClassName={styles.logoBoxActive} to="/">
             <img className={styles.logo} src={logo} alt="" />
             <span style={{opacity: fold ? 0 : 1}}>东方金信</span>
@@ -124,13 +194,29 @@ class SidebarMenu extends React.Component{
         <ul>
           {
             routes.map(item => {
-              const isOpen = supPath.indexOf(item.path) !== -1;
+              const isOpen = this.isChildShow(item.path);
               return item.name ? (
-                <li key={item.path}>
-                  <NavLink onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path) }} style={{paddingLeft: fold ? 30 : 15}} className={styles.menuItem} to={item.path} >
-                    <div style={{overflow: 'hidden', flexShrink: 0}}>
+                <li
+                  key={item.path}
+                  onMouseEnter={
+                    (e) => {
+                      e.preventDefault();
+                      this.menuItemMouseEnter(item.path, true);
+                    }
+                  }
+                  onMouseLeave={
+                    e => {
+                      e.preventDefault();
+                      this.menuItemMouseLeave(item.path, true);
+                    }
+                  }
+                >
+                  <NavLink title={getTextByKey(`menu.${item.name}`)} onClick={(e) => { e.preventDefault(); this.menuTitleClick(item.path) }} style={{paddingLeft: fold ? 30 : 15}} className={styles.menuItem} to={item.path} >
+                    <div className={styles.menuItemText}>
                       <Icon type={item.icon} />
-                      <span style={{opacity: fold ? 0 : 1}} className={styles.menuItemText} >{item.name}</span>
+                      {
+                        fold ? '' : <Language id={`menu.${item.name}`} />
+                      }
                     </div>
                     { fold && item.children && item.children.length ? '' : <Icon type={isOpen ? 'up' : 'down'} />}
                   </NavLink>

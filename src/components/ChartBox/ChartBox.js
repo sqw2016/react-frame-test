@@ -4,6 +4,7 @@
 import React from 'react';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/line';
+import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/dataZoom';
@@ -15,7 +16,8 @@ import 'echarts/lib/chart/gauge';
 
 import styles from './ChartBox.less';
 import CornerBorderBox from '../CornerBorderBox';
-import { fontColor, fontSize, bgColor } from './util';
+import { fontColor, fontSize, bgColor } from './theme';
+import { splitJointTip } from './util';
 
 class ChartBox extends React.Component {
 
@@ -39,7 +41,19 @@ class ChartBox extends React.Component {
 
 
   chart() {
-    const {title, chart, resize = true} = this.props;
+    const {
+      title,
+      chart,
+      resize = true,
+      color,
+      grid = {
+        left: '8%',
+        right: '8%',
+        top: 70,
+        bottom: 70
+      },
+      showToolTipOver
+    } = this.props;
     const myChart = echarts.init(this.chartRef.current);
 
     myChart.setOption({
@@ -52,21 +66,47 @@ class ChartBox extends React.Component {
           fontSize: fontSize + 5,
         },
       },
+      grid,
+      tooltip: {
+        trigger: 'axis',
+        textStyle: {
+          fontSize,
+        },
+        // alwaysShowContent: true,
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: function(params) {
+          showToolTipOver && showToolTipOver(params);
+          return splitJointTip(params);
+        }
+      },
+      legend: {
+        zlevel: 1111,
+        itemWidth: 30,
+        icon: 'roundRect',
+        textStyle: {
+          color: fontColor,
+          fontSize,
+        },
+        bottom: 10
+      },
+      color,
       ...chart(this.props),
     });
     resize && myChart.resize();
   }
 
   render() {
-    const { className, hasCornerBorder = true } = this.props;
+    const { hasCornerBorder = true, className, ...rest } = this.props;
     return hasCornerBorder ?(
-      <CornerBorderBox className={ `${styles.chartBox} ${className}`}>
+      <CornerBorderBox className={ `${styles.chartBox} ${className}`} {...rest}>
         <div ref={this.chartRef} className={styles.chartBox}>
 
         </div>
       </CornerBorderBox>
     ) : (
-      <div ref={this.chartRef} className={styles.chartBox}>
+      <div ref={this.chartRef} className={`${styles.chartBox} ${className}`}>
 
       </div>
     );

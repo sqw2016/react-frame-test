@@ -5,3 +5,63 @@
     font-size: 20px;
   }
 }
+
+.currDetail {
+  width: 200px;
+  padding: 30px;
+  border-radius: 10px;
+  background: linear-gradient(to bottom, #0fbbeb, #37d3ff);
+  margin-bottom: 20px;
+}
+
+.historyDetail {
+  width: 200px;
+  padding: 30px;
+  border-radius: 10px;
+  background: linear-gradient(to bottom, #278ca3, #28c0d7);
+}
+
+.detailContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background: #212123;
+  font-size: 15px;
+  div {
+    text-align: center;
+  }
+}
+
+.detailChart {
+  width: 100%;
+  height: 60%;
+}
+
+.detailTips {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.detailTip {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 20px;
+  background: #333338;
+  margin: 5px 10px;
+}
+
+.fontSize25 {
+  font-size: 25px;
+}
+
+.tipNumUp {
+  composes: fontSize25;
+  color: red;
+}
+
+.tipNumDown {
+  composes: fontSize25;
+  color: green;
+}
