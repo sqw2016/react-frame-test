@@ -45,7 +45,6 @@ class BasicLayout extends React.Component {
   }
 
   matchMenu() {
-    console.log(this.props);
     const { location } = this.props;
     return this.getMatchRouter(routes, location);
   }
@@ -95,7 +94,6 @@ class BasicLayout extends React.Component {
           routes={routes}
           {...this.props}
         />
-
         <div className={styles.contentBody}>
 
           <div className={styles.header}>
@@ -105,7 +103,7 @@ class BasicLayout extends React.Component {
                 {
                   currMenu.icon ? <Icon type={currMenu.icon} /> : ''
                 }
-                <Language id={`menu.${currMenu.name}`} />
+                { currMenu.name ? <Language id={`menu.${currMenu.name}`} /> : '' }
               </div>
             </div>
             <div className={styles.headerRightTool}>

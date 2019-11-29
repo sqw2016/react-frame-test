@@ -133,6 +133,10 @@ const routes = [{
     name: 'image-preview',
     path: '/test/swipe',
     component: () => require('./pages/Test/PhotoSwipeTest').default,
+  }, {
+    name: 'customized-dashboard',
+    path: '/test/customize',
+    component: () => require('./pages/Test/CustomizedDashboard').default,
   }]
 }];
 

@@ -3,3 +3,27 @@
   text-align: center;
   background: red;
 }
+
+.chartContentItemTitle {
+  height: 32px;
+  line-height: 32px;
+}
+
+.chartContextAdd {
+  composes: chartContentItemTitle;
+  cursor: pointer;
+}
+
+.iconBtn {
+  font-size: 20px;
+}
+
+.chartContentForm {
+  margin-bottom: 0;
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+}
+

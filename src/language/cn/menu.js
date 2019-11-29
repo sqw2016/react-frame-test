@@ -28,4 +28,5 @@ export default {
   'menu.redux-test': 'Redux测试',
   'menu.draggable-box': '可拖拽盒子',
   'menu.image-preview': '图片预览',
+  'menu.customized-dashboard': '自定义监控面板',
 }
