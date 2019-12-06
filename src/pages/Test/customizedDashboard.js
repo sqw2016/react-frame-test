@@ -4,12 +4,14 @@
 import React from 'react';
 
 import DragContainer from '../../components/DragContainer';
-import { Button, Modal, Input, Form, Icon, Row, Col } from 'antd';
+import { Button, Modal, Input, Form, Icon, Row, Col, Select } from 'antd';
 
-import { LineChart, ShadowGauge } from '../../components/ChartBox';
+import { BarChart, ShadowGauge } from '../../components/ChartBox';
 
 import styles from './index.less';
 const color = ['#63DA5E', '#8179D7', '#EB7960'];
+
+const { Option } = Select;
 
 const sulfData1 = [5, 5, 5.2, 5.3, 5, 5.1, 5.2, 7, 9, 15, 25, 25, 25, 28, 30, 35, 38,
   37, 35, 30, 25, 20, 15, 10, 5];
@@ -50,12 +52,17 @@ const monitorTargets = [
 
 const FormItem = Form.Item;
 
+const BASEWIDTH = 4; // 监控面板元素基础宽度
+const BASEHEIGHT = 4; // 监控面板元素基础高度
+const MAXCOL = 12; // 最大列数
+
 class CustomizedDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modalShow: false,
       chartSeries: [0],
+      chartList: [], // dashboard 配置
       maxLayoutPointer: {
         x: 0,
         y: 0,
@@ -69,18 +76,55 @@ class CustomizedDashboard extends React.Component {
     })
   };
 
+  /**
+   * 新增一个chart 图表, 根据最右侧点的位置，确定新的图表的位置
+   * 如果新加一个图表之后，宽度超出范围，则换行显示
+   */
+  addChart = () => {
+    const { maxLayoutPointer } = this.state;
+    const nx = maxLayoutPointer.x + BASEWIDTH;
+    const ny = maxLayoutPointer.y + BASEHEIGHT;
+
+    let layout;
+    let pointer;
+    if (nx > MAXCOL) { // 宽度超出范围，换行显示，即x为0，y为当前y值加上基础高度
+      layout = {
+        x: 0,
+        y: ny,
+        w: BASEWIDTH,
+        h: BASEHEIGHT
+      };
+      pointer = {
+        x: BASEWIDTH,
+        y: ny,
+      }
+    } else { // 起点是边界点
+      layout = {
+        ...maxLayoutPointer,
+        w: BASEWIDTH,
+        h: BASEHEIGHT
+      };
+      pointer = {
+        x: nx,
+        y: maxLayoutPointer.y,
+      }
+    }
+    return {
+      layout,
+      pointer
+    };
+  };
+
   addSeries = () => {
     const { validateFields } = this.props.form;
     const { chartSeries } = this.state;
     const len = chartSeries.length;
     validateFields([`chartName${chartSeries[len-1]}`, `chartType${chartSeries[len-1]}`, `chartDataIndex${chartSeries[len-1]}`], (errs, val) => {
-      console.log(errs)
       if (errs) return;
       chartSeries.push( (chartSeries[len - 1] + 1) );
       this.setState({
         chartSeries: [...chartSeries]
-      })
-      console.log(val);
+      });
     });
   };
 
@@ -99,10 +143,10 @@ class CustomizedDashboard extends React.Component {
   };
 
   configOk = () => {
-    const { validateFields, getFieldsValue } = this.props.form;
+    const { validateFields } = this.props.form;
     validateFields((err, val) => {
       if (err) return;
-      const { chartSeries } = this.state;
+      const { chartSeries, chartList } = this.state;
       const obj = {
         api: val.api,
         chartTitle: val.chartTitle,
@@ -117,17 +161,41 @@ class CustomizedDashboard extends React.Component {
           chartDataIndex: val[`chartDataIndex${item}`],
         })
       });
-      console.log(obj);
+      const itemPosition = this.addChart();
+      obj.layout = itemPosition.layout;
+      chartList.push(obj);
+      this.setState({
+        chartList: [...chartList],
+        maxLayoutPointer: itemPosition.pointer,
+        modalShow: false,
+      });
     })
+  };
 
+  getChartShow = (item) => {
+    const target = monitorTargets[0];
+    const series = item.series.map(item => {
+      return {
+        name: item.chartTitle,
+        type: item.chartType,
+        data: target.lineData[item.chartDataIndex],
+      }
+    });
+    return (
+      <BarChart
+        title={item.chartTitle}
+        unit={item.yAisUnit}
+        xData={xData}
+        series={series}
+        color={color}
+      />
+    )
   };
 
   render() {
-    const { modalShow, chartSeries } = this.state;
+    const { modalShow, chartSeries, chartList } = this.state;
 
     const { getFieldDecorator } = this.props.form;
-
-    const target = monitorTargets[0];
 
     return (
       <div>
@@ -135,73 +203,24 @@ class CustomizedDashboard extends React.Component {
           <Button onClick={this.showModal} type="primary">新增</Button>
         </div>
         <DragContainer
-          cols={12}
-          rowHeight={100}
-          onResizeStop={() => {this.setState({resize: 1})}}
+          cols={MAXCOL}
+          rowHeight={50}
+          onResizeStop={() => {console.log("resize"); this.setState({resize: 1})}}
+          onLayoutChange={(layout) => { console.log("layout change", layout);}}
           width={'100%'}
         >
-          <div
-            key="1"
-            data-grid={{x: 0, y: 0, w: 8, h: 6}}
-          >
-            <LineChart
-              title={`A厂区浓度监测`}
-              xData={xData}
-              series={[
+          {
+            chartList.map((item, index) => (
+              <div
+                key={index}
+                data-grid={item.layout}
+              >
                 {
-                  name: '一厂',
-                  type: 'line',
-                  data: target.lineData[0],
-                  markLine: {
-                    silent: true,
-                    label: {
-                      textStyle: {
-                        fontSize: 20
-                      }
-                    },
-                    symbolSize: 15,
-                    lineStyle: {
-                      color: 'red',
-                      type: 'dashed',
-                      width: 1.5
-                    },
-                    data: [{
-                      yAxis: target.markLine
-                    }]
-                  }
-                },
-                {
-                  name: '二厂',
-                  type: 'line',
-                  data: target.lineData[1]
-                },
-                {
-                  name: '三厂',
-                  type: 'line',
-                  data: target.lineData[2]
-                },
-              ]}
-              color={color}
-            />
-          </div>
-          <div
-            key="2"
-            data-grid={{x: 8, y: 0, w: 2, h: 3}}
-          >
-            123
-          </div>
-          <div
-            key="3"
-            data-grid={{x: 10, y: 0, w: 2, h: 3}}
-          >
-            123
-          </div>
-          <div
-            key="4"
-            data-grid={{x: 8, y: 2, w: 2, h: 3}}
-          >
-            1234
-          </div>
+                  this.getChartShow(item)
+                }
+              </div>
+            ))
+          }
         </DragContainer>
         <Modal
           title="配置dashboard面板"
@@ -274,7 +293,13 @@ class CustomizedDashboard extends React.Component {
                         <FormItem  {...fulLayout}>
                           {
                             getFieldDecorator(`chartType${item}`, {
-                            })(<Input placeholder='请选择类型' />)
+                              initialValue: 'line'
+                            })(
+                              <Select placeholder='请选择类型'>
+                                <Option value="line">折线图</Option>
+                                <Option value="bar">柱状图</Option>
+                              </Select>
+                            )
                           }
                         </FormItem>
                       </Col>
